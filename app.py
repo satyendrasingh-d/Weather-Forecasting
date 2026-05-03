@@ -81,18 +81,36 @@ except KeyError as e:
 
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data)
+# --- FETCH LIVE WEATHER DATA ---
+        try:
+            url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+            res = requests.get(url).json()
+            
+            if res.get("cod") != 200:
+                st.error("❌ Invalid City or API Key")
+                live_data = None
+            else:
+                # English comments as requested
+                live_data = {
+                    "temp": res["main"]["temp"],
+                    "hum": res["main"]["humidity"],
+                    "pres": res["main"]["pressure"],
+                    "wind": res["wind"]["speed"]
+                }
+        except Exception as e:
+            st.error(f"❌ API Error: {e}")
+            live_data = None
 
-# ---------------- BUTTON ----------------
-if st.button("🚀 Get Forecast"):
-
-    # --- DISPLAY CURRENT WEATHER ---
-if live_data:
-    # Creating a clean header
-    st.markdown(f"### 📍 Current Weather in {city}")
-    
-    # Using columns to remove brackets and quotes
-    col1, col2 = st.columns(2)
-    
+        # --- DISPLAY CLEAN UI ---
+        if live_data:
+            st.markdown(f"### 📍 Current Weather in {city}")
+            c1, c2 = st.columns(2)
+            with c1:
+                st.write(f"🌡️ **Temperature:** {live_data['temp']} °C")
+                st.write(f"💧 **Humidity:** {live_data['hum']}%")
+            with c2:
+                st.write(f"🌍 **Pressure:** {live_data['pres']} hPa")
+                st.write(f"🌬️ **Wind Speed:** {live_data['wind']} m/s")
     with col1:
         # Accessing dictionary values and displaying as plain text
         st.write(f"🌡️ **Temperature:** {live_data['Temperature (°C)']} °C")
