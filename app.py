@@ -82,7 +82,9 @@ except KeyError as e:
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data)
 # --- FETCH LIVE WEATHER DATA ---
+ # --- FETCH LIVE WEATHER DATA ---
         try:
+            # English comments: Building the API request URL
             url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
             res = requests.get(url).json()
             
@@ -90,7 +92,7 @@ scaled_data = scaler.fit_transform(data)
                 st.error("❌ Invalid City or API Key")
                 live_data = None
             else:
-                # English comments as requested
+                # English comments: Extracting data into a clean dictionary
                 live_data = {
                     "temp": res["main"]["temp"],
                     "hum": res["main"]["humidity"],
@@ -98,6 +100,22 @@ scaled_data = scaler.fit_transform(data)
                     "wind": res["wind"]["speed"]
                 }
         except Exception as e:
+            # English comments: Catching any network or API errors
+            st.error(f"❌ API Error: {e}")
+            live_data = None
+
+        # --- DISPLAY CLEAN UI ---
+        if live_data:
+            st.markdown(f"### 📍 Current Weather in {city}")
+            c1, c2 = st.columns(2)
+            with c1:
+                # English comments: Showing Temp and Humidity without brackets
+                st.write(f"🌡️ **Temperature:** {live_data['temp']} °C")
+                st.write(f"💧 **Humidity:** {live_data['hum']}%")
+            with c2:
+                # English comments: Showing Pressure and Wind Speed
+                st.write(f"🌍 **Pressure:** {live_data['pres']} hPa")
+                st.write(f"🌬️ **Wind Speed:** {live_data['wind']} m/s")
             st.error(f"❌ API Error: {e}")
             live_data = None
 
