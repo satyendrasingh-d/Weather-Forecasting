@@ -14,6 +14,7 @@ import pandas as pd
 import requests
 import matplotlib.pyplot as plt
 import os
+import datetime
 from sklearn.preprocessing import MinMaxScaler
 
 # Optional TensorFlow import (safe)
@@ -140,12 +141,15 @@ if st.button("🚀 Get Forecast"):
             temp_pred = np.random.uniform(20, 35, 10)
 
     # ----------- TABLE -----------
-    forecast_df = pd.DataFrame({
-        "Day": [f"Day {i+1}" for i in range(10)],
-        "Temperature (°C)": temp_pred
-    })
+    today = datetime.date.today()
+date_list = [(today + datetime.timedelta(days=i)).strftime("%d %b %Y") for i in range(1, 11)]
 
-    st.dataframe(forecast_df)
+forecast_df = pd.DataFrame({
+    "Date": date_list,
+    "Temperature (°C)": temp_pred
+})
+
+st.dataframe(forecast_df, hide_index=True)
 
     # ----------- GRAPH -----------
     st.subheader("📈 Forecast Graph")
