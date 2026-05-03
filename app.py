@@ -142,14 +142,12 @@ if st.button("🚀 Get Forecast"):
 
     # ----------- TABLE -----------
     today = datetime.date.today()
-date_list = [(today + datetime.timedelta(days=i)).strftime("%d %b %Y") for i in range(1, 11)]
+    date_list = [(today + datetime.timedelta(days=i)).strftime("%d %b %Y") for i in range(1, 11)]
 
-forecast_df = pd.DataFrame({
-    "Date": date_list,
-    "Temperature (°C)": temp_pred
-})
+    forecast_df = pd.DataFrame({
+        "Date": date_list,"Temperature (°C)": temp_pred})
 
-st.dataframe(forecast_df, hide_index=True)
+    st.dataframe(forecast_df, hide_index=True)
 
     # ----------- GRAPH -----------
     st.subheader("📈 Forecast Graph")
