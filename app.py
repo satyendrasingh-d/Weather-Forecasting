@@ -56,7 +56,7 @@ df = load_data()
 
 # Check if dataframe was loaded successfully to avoid NoneType error
 if df is None:
-    st.error("❌ weather.csv file not found at /content/weather.csv")
+    st.error("❌ weather.csv file not found at weather.csv")
     st.stop()
 
 # ---------------- PREPROCESS ----------------
