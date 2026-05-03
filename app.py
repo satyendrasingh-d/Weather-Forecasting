@@ -26,12 +26,12 @@ except:
 # ---------------- UI CONFIG ----------------
 st.set_page_config(page_title="Weather Forecast App", layout="centered")
 
-st.title("🌦️ Weather Forecast App (RNN + LSTM)")
+st.title("🌦️ Weather Forecast App")
 st.write("Predict next 10 days weather using Deep Learning")
 
 # ---------------- INPUT ----------------
 city = st.text_input("Enter City Name", "Delhi")
-API_KEY = st.text_input("Enter OpenWeather API Key", type="password")
+API_KEY = "f530270436ed7cd9a06324c89c953281"
 
 # ---------------- LOAD MODEL ----------------
 # ---------------- LOAD MODEL ----------------
