@@ -92,9 +92,15 @@ if st.button("🚀 Get Forecast"):
         if res.get("cod") != 200:
             st.error("❌ Invalid API Key or City")
         else:
+            # Rainfall Check (Jo aapne banaya tha)
+            rain = 0
+            if 'rain' in res:
+                rain = res['rain'].get('1h', 0)
+
             st.subheader("🌍 Current Weather")
             
-            col1, col2 = st.columns(2)
+            # Ab hum 3 columns banayenge taaki 5 metrics achhe se adjust ho jayein
+            col1, col2, col3 = st.columns(3)
             
             with col1:
                 st.metric(label="🌡️ Temperature", value=f"{res['main']['temp']} °C")
@@ -103,10 +109,13 @@ if st.button("🚀 Get Forecast"):
             with col2:
                 st.metric(label="💧 Humidity", value=f"{res['main']['humidity']} %")
                 st.metric(label="🌬️ Wind Speed", value=f"{res['wind']['speed']} m/s")
+                
+            with col3:
+                # Rainfall ko UI mein dikhane ke liye metric add kar diya
+                st.metric(label="🌧️ Rainfall (1h)", value=f"{rain} mm")
 
-    except:
-        st.error("❌ API Error")
-
+    except Exception as e:
+        st.error(f"❌ API Error: {e}")
 
     # ----------- PREDICTION -----------
     st.subheader("📅 Next 10 Days Temperature Forecast")
