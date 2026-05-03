@@ -146,7 +146,7 @@ if st.button("🚀 Get Forecast"):
     st.subheader("📈 Forecast Graph")
 
     fig, ax = plt.subplots()
-    ax.plot(temp_pred)
+    ax.plot(Temp)
     ax.set_xlabel("Days")
     ax.set_ylabel("Temperature")
     ax.set_title("Next 10 Days Forecast")
