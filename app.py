@@ -88,19 +88,20 @@ if st.button("🚀 Get Forecast"):
         last_seq = scaled_data[-30:].reshape(1, 30, 4)
         pred = model.predict(last_seq) 
         all_preds = scaler.inverse_transform(pred)
-    except:
-        st.error("❌ Prediction failed")
-        all_preds = np.random.uniform([20, 40, 2, 1000], [35, 80, 10, 1020], (10, 4))
+        st.success("✅ Actual Forecast Loaded from Model!")
 
-    # ----------- TABLE -----------
+    except Exception as e:
+        st.error(f"❌ Model Prediction Error: {e}")
+        st.stop()
+
     st.subheader("📅 Next 10 Days Weather Forecast")
     today = datetime.date.today()
     date_list = [(today + datetime.timedelta(days=i)).strftime("%d %b %Y") for i in range(1, 11)]
 
     forecast_df = pd.DataFrame(all_preds, columns=['Temp (°C)', 'Humidity (%)', 'Wind (m/s)', 'Pressure (hPa)'])
     forecast_df.insert(0, "Date", date_list)
-    st.dataframe(forecast_df.style.format(precision=2), hide_index=True)
 
+    st.dataframe(forecast_df.style.format(precision=2), hide_index=True)
     # ----------- GRAPH (Fixed Line) -----------
     st.subheader("📈 Forecast Graph")
     fig, ax = plt.subplots()
