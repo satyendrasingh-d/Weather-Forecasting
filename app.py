@@ -34,7 +34,6 @@ city = st.text_input("Enter City Name", "Delhi")
 API_KEY = "f530270436ed7cd9a06324c89c953281"
 
 # ---------------- LOAD MODEL ----------------
-# ---------------- LOAD MODEL ----------------
 @st.cache_resource
 def load_my_model():
     model_path = "weather_model.h5"
@@ -88,11 +87,12 @@ if st.button("🚀 Get Forecast"):
     try:
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
         res = requests.get(url).json()
+        st.write(res)
 
         if res.get("cod") != 200:
             st.error("❌ Invalid API Key or City")
         else:
-            # Rainfall Check (Jo aapne banaya tha)
+            # Rainfall Check 
             rain = 0
             if 'rain' in res:
                 rain = res['rain'].get('1h', 0)
