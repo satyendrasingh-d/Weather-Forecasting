@@ -47,7 +47,7 @@ def load_my_model():
 @st.cache_data
 def load_data():
     # Use absolute path for Google Colab environment
-    csv_path = "/content/weather.csv"
+    csv_path = "weather.csv"
     if os.path.exists(csv_path):
         return pd.read_csv(csv_path)
     return None
