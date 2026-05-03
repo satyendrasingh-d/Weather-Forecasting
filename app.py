@@ -136,13 +136,8 @@ if st.button("🚀 Get Forecast"):
     today = datetime.date.today()
     date_list = [(today + datetime.timedelta(days=i)).strftime("%d %b %Y") for i in range(1, 11)]
 
-    forecast_df = pd.DataFrame({
-        "Date": date_list,
-        "Temp (°C)": all_preds[:, 0],
-        "Humidity (%)": all_preds[:, 1],
-        "Pressure (hPa)": all_preds[:, 2],
-        "Wind (m/s)": all_preds[:, 3]
-    })
+    forecast_df = pd.DataFrame(temp_pred, columns=['Temp (°C)', 'Humidity (%)', 'Wind (m/s)', 'Pressure (hPa)'])
+    forecast_df.insert(0, "Date", date_list)
 
     st.dataframe(forecast_df.style.format(precision=2), hide_index=True)
     
