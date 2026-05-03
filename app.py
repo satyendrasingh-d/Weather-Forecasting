@@ -38,11 +38,10 @@ API_KEY = st.text_input("Enter OpenWeather API Key", type="password")
 def load_my_model():
     if not TF_AVAILABLE:
         return None
-    if not os.path.exists("weather_model.h5"):
+    model_path = "weather_model.h5"
+    if not os.path.exists(model_path):
         return None
-    return load_model("weather_model.h5",compile = False)
-
-model = load_my_model()
+    return load_model(model_path, compile=False)
 
 # ---------------- LOAD DATA ----------------
 @st.cache_data
