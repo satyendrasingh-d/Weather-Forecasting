@@ -92,15 +92,17 @@ if st.button("🚀 Get Forecast"):
         if res.get("cod") != 200:
             st.error("❌ Invalid API Key or City")
         else:
-            live_data = {
-                "🌡️ Temperature (°C)": res["main"]["temp"],
-                "💧 Humidity (%)": res["main"]["humidity"],
-                "🌍 Pressure (hPa)": res["main"]["pressure"],
-                "🌬️ Wind Speed (m/s)": res["wind"]["speed"]
-            }
-
             st.subheader("🌍 Current Weather")
-            st.json(live_data)
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.metric(label="🌡️ Temperature", value=f"{res['main']['temp']} °C")
+                st.metric(label="🌍 Pressure", value=f"{res['main']['pressure']} hPa")
+                
+            with col2:
+                st.metric(label="💧 Humidity", value=f"{res['main']['humidity']} %")
+                st.metric(label="🌬️ Wind Speed", value=f"{res['wind']['speed']} m/s")
 
     except:
         st.error("❌ API Error")
