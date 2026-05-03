@@ -34,14 +34,23 @@ city = st.text_input("Enter City Name", "Delhi")
 API_KEY = st.text_input("Enter OpenWeather API Key", type="password")
 
 # ---------------- LOAD MODEL ----------------
+# ---------------- LOAD MODEL ----------------
 @st.cache_resource
 def load_my_model():
-    if not TF_AVAILABLE:
-        return None
     model_path = "weather_model.h5"
+    
     if not os.path.exists(model_path):
+        st.error(f"❌ Model file '{model_path}' not found in the repository!")
         return None
-    return load_model(model_path, compile=False)
+        
+    try:
+        from tensorflow.keras.models import load_model
+        return load_model(model_path, compile=False)
+    except Exception as e:
+        st.error(f"❌ Error loading model: {e}")
+        return None
+
+model = load_my_model()
 
 # ---------------- LOAD DATA ----------------
 @st.cache_data
