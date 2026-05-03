@@ -81,28 +81,29 @@ except KeyError as e:
 
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data)
-# --- FETCH LIVE WEATHER DATA ---
- # --- FETCH LIVE WEATHER DATA ---
+# --- ORIGINAL LIVE WEATHER LOGIC ---
         try:
-            # English comments: Building the API request URL
+            # Reverting to the original API fetch method
             url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
             res = requests.get(url).json()
-            
+
             if res.get("cod") != 200:
                 st.error("❌ Invalid City or API Key")
-                live_data = None
             else:
-                # English comments: Extracting data into a clean dictionary
+                # English comments: Restoring the original live_data dictionary format
                 live_data = {
-                    "temp": res["main"]["temp"],
-                    "hum": res["main"]["humidity"],
-                    "pres": res["main"]["pressure"],
-                    "wind": res["wind"]["speed"]
+                    "🌡️ Temperature (°C)": res["main"]["temp"],
+                    "💧 Humidity (%)": res["main"]["humidity"],
+                    "🌍 Pressure (hPa)": res["main"]["pressure"],
+                    "🌬️ Wind Speed (m/s)": res["wind"]["speed"]
                 }
+
+                st.subheader("🔵 Current Weather")
+                # English comments: Restoring the original JSON display format
+                st.json(live_data)
         except Exception as e:
-            # English comments: Catching any network or API errors
+            # English comments: Handling original API exception
             st.error(f"❌ API Error: {e}")
-            live_data = None
 
         # --- DISPLAY CLEAN UI ---
         if live_data:
