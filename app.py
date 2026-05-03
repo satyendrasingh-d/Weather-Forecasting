@@ -87,7 +87,6 @@ if st.button("🚀 Get Forecast"):
     try:
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
         res = requests.get(url).json()
-        st.write(res)
 
         if res.get("cod") != 200:
             st.error("❌ Invalid API Key or City")
