@@ -40,7 +40,7 @@ def load_my_model():
         return None
     if not os.path.exists("weather_model.h5"):
         return None
-    return load_model("weather_model.h5")
+    return load_model("weather_model.h5",compile = False)
 
 model = load_my_model()
 
