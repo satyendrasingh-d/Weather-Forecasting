@@ -121,33 +121,31 @@ if st.button("🚀 Get Forecast"):
     st.subheader("📅 Next 10 Days Temperature Forecast")
 
     if model is None:
-        st.warning("⚠️ Model not found / TensorFlow not available → Showing dummy forecast")
-
-        temp_pred = np.random.uniform(20, 35, 10)
-
+        st.warning("⚠️ Model not found → Showing dummy forecast")
+        all_preds = np.random.uniform([20, 40, 1000, 2], [35, 80, 1020, 10], (10, 4))
     else:
         try:
-            last_seq = scaled_data[-30:]
-            last_seq = last_seq.reshape(1, 30, 4)
-
+            last_seq = scaled_data[-30:].reshape(1, 30, 4)
             pred = model.predict(last_seq)
-
-            temp_pred = scaler.inverse_transform(
-                np.concatenate([pred.reshape(-1,1), np.zeros((10,3))], axis=1)
-            )[:,0]
-
+            
+            all_preds = scaler.inverse_transform(pred)
         except:
-            st.error("❌ Model prediction failed")
-            temp_pred = np.random.uniform(20, 35, 10)
-
+            st.error("❌ Prediction failed")
+            all_preds = np.random.uniform([20, 40, 1000, 2], [35, 80, 1020, 10], (10, 4))
     # ----------- TABLE -----------
     today = datetime.date.today()
     date_list = [(today + datetime.timedelta(days=i)).strftime("%d %b %Y") for i in range(1, 11)]
 
     forecast_df = pd.DataFrame({
-        "Date": date_list,"Temperature (°C)": temp_pred})
+        "Date": date_list,
+        "Temp (°C)": all_preds[:, 0],
+        "Humidity (%)": all_preds[:, 1],
+        "Pressure (hPa)": all_preds[:, 2],
+        "Wind (m/s)": all_preds[:, 3]
+    })
 
-    st.dataframe(forecast_df, hide_index=True)
+    st.dataframe(forecast_df.style.format(precision=2), hide_index=True)
+    
 
     # ----------- GRAPH -----------
     st.subheader("📈 Forecast Graph")
