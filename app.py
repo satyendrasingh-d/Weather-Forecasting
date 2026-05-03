@@ -85,14 +85,24 @@ scaled_data = scaler.fit_transform(data)
 # ---------------- BUTTON ----------------
 if st.button("🚀 Get Forecast"):
 
-    # ----------- LIVE WEATHER -----------
-    try:
-        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
-        res = requests.get(url).json()
-
-        if res.get("cod") != 200:
-            st.error("❌ Invalid API Key or City")
-        else:
+    # --- DISPLAY CURRENT WEATHER ---
+if live_data:
+    # Creating a clean header
+    st.markdown(f"### 📍 Current Weather in {city}")
+    
+    # Using columns to remove brackets and quotes
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Accessing dictionary values and displaying as plain text
+        st.write(f"🌡️ **Temperature:** {live_data['Temperature (°C)']} °C")
+        st.write(f"💧 **Humidity:** {live_data['Humidity (%)']}%")
+        
+    with col2:
+        st.write(f"🌍 **Pressure:** {live_data['Pressure (hPa)']} hPa")
+        st.write(f"🌬️ **Wind Speed:** {live_data['Wind Speed (m/s)']} m/s")
+else:
+    st.error("Weather data not found!")
             live_data = {
                 "🌡️ Temperature (°C)": res["main"]["temp"],
                 "💧 Humidity (%)": res["main"]["humidity"],
