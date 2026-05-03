@@ -81,65 +81,17 @@ except KeyError as e:
 
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data)
-# --- ORIGINAL LIVE WEATHER LOGIC ---
-        try:
-            # Reverting to the original API fetch method
-            url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
-            res = requests.get(url).json()
+# ---------------- BUTTON ----------------
+if st.button("🚀 Get Forecast"):
 
-            if res.get("cod") != 200:
-                st.error("❌ Invalid City or API Key")
-            else:
-                # English comments: Restoring the original live_data dictionary format
-                live_data = {
-                    "🌡️ Temperature (°C)": res["main"]["temp"],
-                    "💧 Humidity (%)": res["main"]["humidity"],
-                    "🌍 Pressure (hPa)": res["main"]["pressure"],
-                    "🌬️ Wind Speed (m/s)": res["wind"]["speed"]
-                }
+    # ----------- LIVE WEATHER -----------
+    try:
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+        res = requests.get(url).json()
 
-                st.subheader("🔵 Current Weather")
-                # English comments: Restoring the original JSON display format
-                st.json(live_data)
-        except Exception as e:
-            # English comments: Handling original API exception
-            st.error(f"❌ API Error: {e}")
-
-        # --- DISPLAY CLEAN UI ---
-        if live_data:
-            st.markdown(f"### 📍 Current Weather in {city}")
-            c1, c2 = st.columns(2)
-            with c1:
-                # English comments: Showing Temp and Humidity without brackets
-                st.write(f"🌡️ **Temperature:** {live_data['temp']} °C")
-                st.write(f"💧 **Humidity:** {live_data['hum']}%")
-            with c2:
-                # English comments: Showing Pressure and Wind Speed
-                st.write(f"🌍 **Pressure:** {live_data['pres']} hPa")
-                st.write(f"🌬️ **Wind Speed:** {live_data['wind']} m/s")
-            st.error(f"❌ API Error: {e}")
-            live_data = None
-
-        # --- DISPLAY CLEAN UI ---
-        if live_data:
-            st.markdown(f"### 📍 Current Weather in {city}")
-            c1, c2 = st.columns(2)
-            with c1:
-                st.write(f"🌡️ **Temperature:** {live_data['temp']} °C")
-                st.write(f"💧 **Humidity:** {live_data['hum']}%")
-            with c2:
-                st.write(f"🌍 **Pressure:** {live_data['pres']} hPa")
-                st.write(f"🌬️ **Wind Speed:** {live_data['wind']} m/s")
-    with col1:
-        # Accessing dictionary values and displaying as plain text
-        st.write(f"🌡️ **Temperature:** {live_data['Temperature (°C)']} °C")
-        st.write(f"💧 **Humidity:** {live_data['Humidity (%)']}%")
-        
-    with col2:
-        st.write(f"🌍 **Pressure:** {live_data['Pressure (hPa)']} hPa")
-        st.write(f"🌬️ **Wind Speed:** {live_data['Wind Speed (m/s)']} m/s")
-else:
-    st.error("Weather data not found!")
+        if res.get("cod") != 200:
+            st.error("❌ Invalid API Key or City")
+        else:
             live_data = {
                 "🌡️ Temperature (°C)": res["main"]["temp"],
                 "💧 Humidity (%)": res["main"]["humidity"],
@@ -152,6 +104,7 @@ else:
 
     except:
         st.error("❌ API Error")
+
 
     # ----------- PREDICTION -----------
     st.subheader("📅 Next 10 Days Temperature Forecast")
