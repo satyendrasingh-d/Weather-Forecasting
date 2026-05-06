@@ -15,7 +15,7 @@ st.title("🌦️ Weather Forecast (RNN vs LSTM)")
 st.write("Compare predictions using RNN and LSTM with Live Data")
 
 # ---------------- API ----------------
-API_KEY = "YOUR_API_KEY"   # 🔴 apni API key daalo
+API_KEY = "f530270436ed7cd9a06324c89c953281"   # 🔴 apni API key daalo
 
 def get_live_weather(city="Delhi"):
     try:
