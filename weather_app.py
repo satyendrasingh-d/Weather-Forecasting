@@ -39,7 +39,8 @@ def get_live_weather(city="Delhi"):
 def load_models():
     if not os.path.exists("weatherHistory_rnn_model.h5") or not os.path.exists("weatherHistory_lstm_model.h5"):
         return None, None
-    return load_model("weatherHistory_rnn_model.h5"), load_model("weatherHistory_lstm_model.h5")
+    return load_model("weatherHistory_rnn_model.h5", compile=False), \
+       load_model("weatherHistory_lstm_model.h5", compile=False)
 
 @st.cache_resource
 def load_scaler():
