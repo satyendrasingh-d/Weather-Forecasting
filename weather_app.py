@@ -113,7 +113,7 @@ lstm_full = scaler.inverse_transform(
 )[:, 0]
 
     # ---------------- DATAFRAME ----------------
-    days = [f"Day {i+1}" for i in range(10)]
+days = [f"Day {i+1}" for i in range(10)]
 
     df_pred = pd.DataFrame({
         "Day": days,
