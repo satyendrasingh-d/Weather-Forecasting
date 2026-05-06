@@ -88,7 +88,7 @@ if st.button("🚀 Get Prediction"):
     
 if not hasattr(scaler, "data_min_"):
     # ---------------- LIVE DATA ----------------
-live_data = get_live_weather(city)
+    live_data = get_live_weather(city)
 
 if live_data is None:
     st.error("❌ API Error")
