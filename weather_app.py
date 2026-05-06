@@ -90,7 +90,7 @@ if not hasattr(scaler, "data_min_"):
     scaler.fit(dummy)
 
 scaled_seq = scaler.transform(dummy)
-    scaled_seq = scaled_seq.reshape(1,30,5)
+scaled_seq = scaled_seq.reshape(1, 30, 5)
 
     # ---------------- PREDICTION ----------------
     rnn_pred = rnn_model.predict(scaled_seq).reshape(10,1)
