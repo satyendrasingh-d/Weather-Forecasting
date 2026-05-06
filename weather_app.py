@@ -85,7 +85,11 @@ if st.button("🚀 Get Prediction"):
     # ---------------- CREATE INPUT SEQUENCE ----------------
     # dummy sequence (replace with real historical data if available)
     dummy = np.array([live_data] * 30)
-    scaled_seq = scaler.transform(dummy)
+    
+if not hasattr(scaler, "data_min_"):
+    scaler.fit(dummy)
+
+scaled_seq = scaler.transform(dummy)
     scaled_seq = scaled_seq.reshape(1,30,5)
 
     # ---------------- PREDICTION ----------------
