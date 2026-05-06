@@ -92,21 +92,25 @@ if not hasattr(scaler, "data_min_"):
 scaled_seq = scaler.transform(dummy)
 scaled_seq = scaled_seq.reshape(1, 30, 5)
 
-    # ---------------- PREDICTION ----------------
-   # scaling
+    # ---------------- SCALING ----------------
 if not hasattr(scaler, "data_min_"):
     scaler.fit(dummy)
 
 scaled_seq = scaler.transform(dummy)
 scaled_seq = scaled_seq.reshape(1, 30, 5)
 
-# prediction (same level)
+# ---------------- PREDICTION ----------------
 rnn_pred = rnn_model.predict(scaled_seq).reshape(10, 1)
 lstm_pred = lstm_model.predict(scaled_seq).reshape(10, 1)
 
-    # inverse transform
-    rnn_full = scaler.inverse_transform(np.hstack([rnn_pred, np.zeros((10,4))]))[:,0]
-    lstm_full = scaler.inverse_transform(np.hstack([lstm_pred, np.zeros((10,4))]))[:,0]
+# ---------------- INVERSE ----------------
+rnn_full = scaler.inverse_transform(
+    np.hstack([rnn_pred, np.zeros((10,4))])
+)[:, 0]
+
+lstm_full = scaler.inverse_transform(
+    np.hstack([lstm_pred, np.zeros((10,4))])
+)[:, 0]
 
     # ---------------- DATAFRAME ----------------
     days = [f"Day {i+1}" for i in range(10)]
