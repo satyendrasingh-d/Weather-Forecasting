@@ -123,22 +123,21 @@ df_pred = pd.DataFrame({
     "LSTM Temp (°C)": lstm_full
 })
 
-    st.subheader("📅 10-Day Temperature Forecast")
-    st.dataframe(df_pred)
+# ---------------- UI ----------------
+st.subheader("📅 10-Day Temperature Forecast")
+st.dataframe(df_pred)
 
-    # ---------------- GRAPH ----------------
-    st.subheader("📈 Comparison Graph")
+st.subheader("📈 Comparison Graph")
 
-    fig, ax = plt.subplots()
-    ax.plot(days, rnn_full, label="RNN", marker='o')
-    ax.plot(days, lstm_full, label="LSTM", marker='o')
+fig, ax = plt.subplots()
+ax.plot(days, rnn_full, label="RNN", marker='o')
+ax.plot(days, lstm_full, label="LSTM", marker='o')
 
-    ax.set_xlabel("Days")
-    ax.set_ylabel("Temperature (°C)")
-    ax.set_title("RNN vs LSTM Forecast")
-    ax.legend()
+ax.set_xlabel("Days")
+ax.set_ylabel("Temperature")
+ax.legend()
 
-    st.pyplot(fig)
+st.pyplot(fig)
 
 # ---------------- SIDEBAR ----------------
 st.sidebar.header("📌 About")
