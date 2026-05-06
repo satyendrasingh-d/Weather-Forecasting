@@ -49,7 +49,9 @@ def load_scaler():
     return pickle.load(open("scaler.pkl", "rb"))
 
 rnn_model, lstm_model = load_models()
-scaler = load_scaler()
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
 
 if rnn_model is None or lstm_model is None:
     st.error("❌ Model files missing!")
