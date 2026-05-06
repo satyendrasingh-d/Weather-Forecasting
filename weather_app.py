@@ -113,13 +113,15 @@ lstm_full = scaler.inverse_transform(
 )[:, 0]
 
     # ---------------- DATAFRAME ----------------
+# ---------------- DAYS ----------------
 days = [f"Day {i+1}" for i in range(10)]
 
-    df_pred = pd.DataFrame({
-        "Day": days,
-        "RNN Temp (°C)": rnn_full,
-        "LSTM Temp (°C)": lstm_full
-    })
+# ---------------- DATAFRAME ----------------
+df_pred = pd.DataFrame({
+    "Day": days,
+    "RNN Temp (°C)": rnn_full,
+    "LSTM Temp (°C)": lstm_full
+})
 
     st.subheader("📅 10-Day Temperature Forecast")
     st.dataframe(df_pred)
