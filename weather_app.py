@@ -87,9 +87,26 @@ if st.button("🚀 Get Prediction"):
     dummy = np.array([live_data] * 30)
     
 if not hasattr(scaler, "data_min_"):
-    scaler.fit(dummy)
+    # ---------------- LIVE DATA ----------------
+live_data = get_live_weather(city)
 
-scaled_seq = scaler.transform(dummy)
+if live_data is None:
+    st.error("❌ API Error")
+    st.stop()
+
+# ---------------- DUMMY SEQUENCE ----------------
+dummy = np.tile(live_data, (30, 1))
+
+# ---------------- SCALING ----------------
+try:
+    scaler = pickle.load(open("scaler.pkl", "rb"))
+    scaled_seq = scaler.transform(dummy)
+except:
+    from sklearn.preprocessing import MinMaxScaler
+    scaler = MinMaxScaler()
+    scaler.fit(dummy)
+    scaled_seq = scaler.transform(dummy)
+
 scaled_seq = scaled_seq.reshape(1, 30, 5)
 
     # ---------------- SCALING ----------------
