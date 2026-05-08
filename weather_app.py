@@ -1,9 +1,6 @@
-# ============================================
-# weather_app.py
-# Streamlit UI for Weather Forecasting Project
-# RNN vs LSTM (10-Day Multi-Feature Forecast)
-# ============================================
+# `weather_app.py` (Realistic Forecast Version)
 
+```python
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -18,7 +15,6 @@ from tensorflow.keras.models import load_model
 # ============================================
 # PAGE CONFIG
 # ============================================
-
 st.set_page_config(
     page_title="Weather Forecast App",
     page_icon="🌦️",
@@ -26,17 +22,39 @@ st.set_page_config(
 )
 
 st.title("🌦️ Weather Forecasting System")
-st.markdown(
-    """
-    Predict the next **10 days weather forecast**
-    using **RNN** and **LSTM** models.
-    """
-)
+st.write("Predict the next 10 days weather using RNN and LSTM models.")
 
 # ============================================
-# LOAD MODELS AND SCALER
+# SETTINGS
 # ============================================
+API_KEY = "f530270436ed7cd9a06324c89c953281"
 
+FEATURES = [
+    'Temperature (C)',
+    'Humidity',
+    'Pressure (millibars)',
+    'Wind Speed (km/h)',
+    'Visibility (km)'
+]
+
+# ============================================
+# FILE CHECK
+# ============================================
+required_files = [
+    "weatherHistory.csv",
+    "weather_rnn_model.h5",
+    "weather_lstm_model.h5",
+    "scaler.pkl"
+]
+
+for file in required_files:
+    if not os.path.exists(file):
+        st.error(f"❌ Required file not found: {file}")
+        st.stop()
+
+# ============================================
+# LOAD RESOURCES
+# ============================================
 @st.cache_resource
 def load_models():
     rnn_model = load_model("weather_rnn_model.h5", compile=False)
@@ -51,41 +69,27 @@ def load_scaler():
     return scaler
 
 
-# Check files
-required_files = [
-    "weather_rnn_model.h5",
-    "weather_lstm_model.h5",
-    "scaler.pkl"
-]
+@st.cache_data
+def load_history():
+    df = pd.read_csv("weatherHistory.csv")
+    return df[FEATURES].dropna()
 
-for file in required_files:
-    if not os.path.exists(file):
-        st.error(f"❌ Required file not found: {file}")
-        st.stop()
 
-# Load resources
 rnn_model, lstm_model = load_models()
 scaler = load_scaler()
+history_df = load_history()
 
 # ============================================
-# OPENWEATHER API
+# LIVE WEATHER FUNCTION
 # ============================================
-
-API_KEY = "f530270436ed7cd9a06324c89c953281"
-
-
 def get_live_weather(city):
-    """
-    Returns:
-    [temperature, humidity, pressure, wind_speed, visibility]
-    """
     try:
         url = (
             f"https://api.openweathermap.org/data/2.5/weather"
             f"?q={city}&appid={API_KEY}&units=metric"
         )
 
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         data = response.json()
 
         if data.get("cod") != 200:
@@ -94,9 +98,11 @@ def get_live_weather(city):
         temperature = data["main"]["temp"]
         humidity = data["main"]["humidity"]
         pressure = data["main"]["pressure"]
-        wind_speed = data["wind"]["speed"]
 
-        # Visibility in meters -> kilometers
+        # OpenWeather wind speed = m/s, convert to km/h
+        wind_speed = data["wind"]["speed"] * 3.6
+
+        # Visibility meter -> km
         visibility = data.get("visibility", 10000) / 1000
 
         features = [
@@ -112,13 +118,33 @@ def get_live_weather(city):
     except Exception as e:
         return None, str(e)
 
+# ============================================
+# CLIP FORECAST TO REALISTIC RANGE
+# ============================================
+def clip_forecast(forecast):
+    forecast = forecast.copy()
+
+    # Temperature (°C)
+    forecast[:, 0] = np.clip(forecast[:, 0], -10, 50)
+
+    # Humidity (%)
+    forecast[:, 1] = np.clip(forecast[:, 1], 0, 100)
+
+    # Pressure (hPa)
+    forecast[:, 2] = np.clip(forecast[:, 2], 950, 1050)
+
+    # Wind Speed (km/h)
+    forecast[:, 3] = np.clip(forecast[:, 3], 0, 150)
+
+    # Visibility (km)
+    forecast[:, 4] = np.clip(forecast[:, 4], 0, 20)
+
+    return forecast
 
 # ============================================
 # SIDEBAR
 # ============================================
-
 st.sidebar.header("⚙️ Settings")
-
 city = st.sidebar.text_input("Enter City Name", "Delhi")
 
 model_choice = st.sidebar.selectbox(
@@ -126,78 +152,85 @@ model_choice = st.sidebar.selectbox(
     ["Both", "RNN", "LSTM"]
 )
 
-st.sidebar.markdown("---")
-st.sidebar.markdown(
-    """
-    ### 📌 Features Predicted
-    - 🌡️ Temperature
-    - 💧 Humidity
-    - 🌍 Pressure
-    - 🌬️ Wind Speed
-    - 👀 Visibility
-    """
-)
-
 # ============================================
-# GET FORECAST BUTTON
+# MAIN BUTTON
 # ============================================
-
 if st.button("🚀 Generate 10-Day Forecast"):
 
-    # ---------------- LIVE WEATHER ----------------
+    if API_KEY == "f530270436ed7cd9a06324c89c953281":
+        st.error("❌ Add your OpenWeather API key in API_KEY variable.")
+        st.stop()
+
+    # ========================================
+    # GET LIVE WEATHER
+    # ========================================
     live_features, raw_data = get_live_weather(city)
 
     if live_features is None:
         st.error(f"❌ API Error: {raw_data}")
         st.stop()
 
-    # ---------------- CURRENT WEATHER ----------------
+    # ========================================
+    # SHOW CURRENT WEATHER
+    # ========================================
     st.subheader(f"🌍 Current Weather in {city.title()}")
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+    c1, c2, c3, c4, c5 = st.columns(5)
 
-    col1.metric("🌡️ Temp", f"{live_features[0]:.2f} °C")
-    col2.metric("💧 Humidity", f"{live_features[1]:.2f} %")
-    col3.metric("🌍 Pressure", f"{live_features[2]:.2f} hPa")
-    col4.metric("🌬️ Wind", f"{live_features[3]:.2f} m/s")
-    col5.metric("👀 Visibility", f"{live_features[4]:.2f} km")
+    c1.metric("🌡️ Temp", f"{live_features[0]:.2f} °C")
+    c2.metric("💧 Humidity", f"{live_features[1]:.2f} %")
+    c3.metric("🌍 Pressure", f"{live_features[2]:.2f} hPa")
+    c4.metric("🌬️ Wind", f"{live_features[3]:.2f} km/h")
+    c5.metric("👀 Visibility", f"{live_features[4]:.2f} km")
 
-    # ---------------- CREATE INPUT SEQUENCE ----------------
-    # Repeat current live data 30 times
-    # (Simple approach for live forecasting)
-    dummy_sequence = np.tile(live_features, (30, 1))
+    # ========================================
+    # BUILD REALISTIC INPUT SEQUENCE
+    # last 29 historical days + today's live data
+    # ========================================
+    scaled_history = scaler.transform(history_df)
+    last_29_days = scaled_history[-29:]
 
-    scaled_seq = scaler.transform(dummy_sequence)
-    scaled_seq = scaled_seq.reshape(1, 30, 5)
+    live_scaled = scaler.transform([live_features])
 
-    # ---------------- PREDICTIONS ----------------
-    rnn_pred = rnn_model.predict(scaled_seq, verbose=0)
-    lstm_pred = lstm_model.predict(scaled_seq, verbose=0)
+    final_seq = np.vstack([last_29_days, live_scaled])
+    final_seq = final_seq.reshape(1, 30, 5)
 
-    # Reshape to (10, 5)
+    # ========================================
+    # PREDICTIONS
+    # ========================================
+    rnn_pred = rnn_model.predict(final_seq, verbose=0)
+    lstm_pred = lstm_model.predict(final_seq, verbose=0)
+
     rnn_pred = rnn_pred.reshape(10, 5)
     lstm_pred = lstm_pred.reshape(10, 5)
 
-    # Inverse scaling
+    # Inverse transform
     rnn_forecast = scaler.inverse_transform(rnn_pred)
     lstm_forecast = scaler.inverse_transform(lstm_pred)
 
-    # ---------------- DATE COLUMN ----------------
-    today = datetime.date.today()
+    # Clip to realistic ranges
+    rnn_forecast = clip_forecast(rnn_forecast)
+    lstm_forecast = clip_forecast(lstm_forecast)
 
+    # ========================================
+    # DATE LIST
+    # ========================================
+    today = datetime.date.today()
     dates = [
         (today + datetime.timedelta(days=i)).strftime("%d-%b-%Y")
         for i in range(1, 11)
     ]
 
-    # ---------------- DATAFRAME ----------------
+    # ========================================
+    # CREATE DATAFRAME
+    # ========================================
     if model_choice == "RNN":
         forecast_df = pd.DataFrame({
             "Date": dates,
             "Temperature (°C)": rnn_forecast[:, 0],
             "Humidity (%)": rnn_forecast[:, 1],
             "Pressure (hPa)": rnn_forecast[:, 2],
-            "Wind Speed": rnn_forecast[:, 3],
+            "Wind Speed (km/h)": rnn_forecast[:, 3],
             "Visibility (km)": rnn_forecast[:, 4]
         })
 
@@ -207,7 +240,7 @@ if st.button("🚀 Generate 10-Day Forecast"):
             "Temperature (°C)": lstm_forecast[:, 0],
             "Humidity (%)": lstm_forecast[:, 1],
             "Pressure (hPa)": lstm_forecast[:, 2],
-            "Wind Speed": lstm_forecast[:, 3],
+            "Wind Speed (km/h)": lstm_forecast[:, 3],
             "Visibility (km)": lstm_forecast[:, 4]
         })
 
@@ -226,12 +259,16 @@ if st.button("🚀 Generate 10-Day Forecast"):
             "LSTM Visibility": lstm_forecast[:, 4]
         })
 
-    # ---------------- SHOW TABLE ----------------
+    # ========================================
+    # SHOW TABLE
+    # ========================================
     st.subheader("📅 10-Day Forecast")
     st.dataframe(forecast_df.round(2), use_container_width=True)
 
-    # ---------------- TEMPERATURE GRAPH ----------------
-    st.subheader("📈 Temperature Forecast Comparison")
+    # ========================================
+    # TEMPERATURE GRAPH
+    # ========================================
+    st.subheader("📈 Temperature Forecast")
 
     fig, ax = plt.subplots(figsize=(12, 5))
 
@@ -260,38 +297,40 @@ if st.button("🚀 Generate 10-Day Forecast"):
     ax.legend()
 
     plt.xticks(rotation=45)
-
     st.pyplot(fig)
 
-    # ---------------- DOWNLOAD CSV ----------------
+    # ========================================
+    # DOWNLOAD CSV
+    # ========================================
     csv = forecast_df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         label="⬇️ Download Forecast CSV",
         data=csv,
-        file_name=f"{city.lower()}_weather_forecast.csv",
+        file_name=f"{city.lower()}_forecast.csv",
         mime="text/csv"
     )
 
 # ============================================
 # SIDEBAR ABOUT
 # ============================================
-
 st.sidebar.markdown("---")
 st.sidebar.header("📌 About Project")
 st.sidebar.write(
     """
-    This project compares **RNN** and **LSTM**
-    models for multivariate weather forecasting.
+    This project compares RNN and LSTM models for
+    10-day multivariate weather forecasting.
 
-    **Input:** Past 30 days weather data  
-    **Output:** Next 10 days forecast
-
-    **Predicted Features:**
+    Predicted features:
     - Temperature
     - Humidity
     - Pressure
     - Wind Speed
     - Visibility
+
+    Input used for prediction:
+    - Last 29 historical days
+    - Current live weather from OpenWeather API
     """
 )
+```
