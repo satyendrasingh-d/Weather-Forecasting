@@ -71,7 +71,7 @@ scaler = load_scaler()
 # OPENWEATHER API
 # ============================================
 
-API_KEY = "YOUR_OPENWEATHER_API_KEY"
+API_KEY = "f530270436ed7cd9a06324c89c953281"
 
 
 def get_live_weather(city):
