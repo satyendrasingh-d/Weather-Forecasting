@@ -26,7 +26,7 @@ st.write("Predict the next 10 days weather using RNN and LSTM models.")
 # ============================================
 # SETTINGS
 # ============================================
-API_KEY = "YOUR_OPENWEATHER_API_KEY"
+API_KEY = "f530270436ed7cd9a06324c89c953281"
 
 FEATURES = [
     'Temperature (C)',
@@ -155,10 +155,6 @@ model_choice = st.sidebar.selectbox(
 # MAIN BUTTON
 # ============================================
 if st.button("🚀 Generate 10-Day Forecast"):
-
-    if API_KEY == "f530270436ed7cd9a06324c89c953281":
-        st.error("❌ Please add your OpenWeather API key in API_KEY variable.")
-        st.stop()
 
     # ========================================
     # GET LIVE WEATHER
