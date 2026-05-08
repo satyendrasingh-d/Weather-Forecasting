@@ -333,23 +333,3 @@ st.sidebar.write(
     """
 )
 
-## Required Files in GitHub Repo
-
-weather_app.py
-requirements.txt
-weatherHistory.csv
-weather_rnn_model.h5
-weather_lstm_model.h5
-scaler.pkl
-
-## `requirements.txt`
-
-
-streamlit
-pandas
-numpy
-matplotlib
-requests
-scikit-learn
-tensorflow
-h5py
