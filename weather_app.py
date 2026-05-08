@@ -27,7 +27,7 @@ st.write("Predict the next 10 days weather using RNN and LSTM models.")
 # ============================================
 # SETTINGS
 # ============================================
-API_KEY = "f530270436ed7cd9a06324c89c953281"
+API_KEY = "YOUR_OPENWEATHER_API_KEY"
 
 FEATURES = [
     'Temperature (C)',
@@ -157,8 +157,8 @@ model_choice = st.sidebar.selectbox(
 # ============================================
 if st.button("🚀 Generate 10-Day Forecast"):
 
-    if API_KEY == "f530270436ed7cd9a06324c89c953281":
-        st.error("❌ Add your OpenWeather API key in API_KEY variable.")
+    if API_KEY == "YOUR_OPENWEATHER_API_KEY":
+        st.error("❌ Please add your OpenWeather API key in API_KEY variable.")
         st.stop()
 
     # ========================================
@@ -334,3 +334,43 @@ st.sidebar.write(
     """
 )
 ```
+
+---
+
+## Required Files in GitHub Repo
+
+```text
+weather_app.py
+requirements.txt
+weatherHistory.csv
+weather_rnn_model.h5
+weather_lstm_model.h5
+scaler.pkl
+```
+
+---
+
+## `requirements.txt`
+
+```txt
+streamlit
+pandas
+numpy
+matplotlib
+requests
+scikit-learn
+tensorflow
+h5py
+```
+
+---
+
+## Important
+
+Replace:
+
+```python
+API_KEY = "YOUR_OPENWEATHER_API_KEY"
+```
+
+with your actual OpenWeather API key.
