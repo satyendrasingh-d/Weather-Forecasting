@@ -335,20 +335,16 @@ st.sidebar.write(
 
 ## Required Files in GitHub Repo
 
-```text
 weather_app.py
 requirements.txt
 weatherHistory.csv
 weather_rnn_model.h5
 weather_lstm_model.h5
 scaler.pkl
-```
-
----
 
 ## `requirements.txt`
 
-```txt
+
 streamlit
 pandas
 numpy
@@ -357,10 +353,6 @@ requests
 scikit-learn
 tensorflow
 h5py
-```
-
----
-
 ## Important
 
 Replace:
