@@ -353,11 +353,3 @@ requests
 scikit-learn
 tensorflow
 h5py
-## Important
-
-Replace:
-
-API_KEY = "YOUR_OPENWEATHER_API_KEY"
-```
-
-with your actual OpenWeather API key.
