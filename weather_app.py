@@ -332,9 +332,6 @@ st.sidebar.write(
     - Current live weather from OpenWeather API
     """
 )
-```
-
----
 
 ## Required Files in GitHub Repo
 
