@@ -191,14 +191,17 @@ if st.button("🚀 Generate 10-Day Forecast"):
     # BUILD INPUT SEQUENCE
     # last 29 historical days + current live weather
     # ========================================
-    scaled_history = scaler.transform(history_df)
+
+    history_values = history_df[FEATURES].values
+    scaled_history = scaler.transform(history_values)
+
     last_29_days = scaled_history[-29:]
 
-    live_scaled = scaler.transform([live_features])
+    live_df = pd.DataFrame([live_features], columns=FEATURES)
+    live_scaled = scaler.transform(live_df.values)
 
     final_seq = np.vstack([last_29_days, live_scaled])
     final_seq = final_seq.reshape(1, 30, 4)
-
     # ========================================
     # PREDICTIONS
     # ========================================
