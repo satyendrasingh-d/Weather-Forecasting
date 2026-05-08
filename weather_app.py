@@ -1,6 +1,5 @@
 # `weather_app.py` (Realistic Forecast Version)
 
-```python
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -369,7 +368,6 @@ h5py
 
 Replace:
 
-```python
 API_KEY = "YOUR_OPENWEATHER_API_KEY"
 ```
 
