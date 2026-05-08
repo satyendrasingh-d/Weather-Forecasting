@@ -26,7 +26,7 @@ st.write("Predict the next 10 days weather using RNN and LSTM models.")
 # ============================================
 # SETTINGS
 # ============================================
-API_KEY = "f530270436ed7cd9a06324c89c953281"
+API_KEY = "YOUR_OPENWEATHER_API_KEY"
 
 FEATURES = [
     'Temperature (C)',
