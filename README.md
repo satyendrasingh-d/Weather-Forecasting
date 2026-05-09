@@ -1,4 +1,5 @@
 # Weather-Forecasting
+Streamlit App : https://weather-forecasting-002586.streamlit.app/
 Live Data Project
 
 🌦️ **Weather Forecasting using RNN & LSTM (Live Data Based)**
@@ -16,7 +17,7 @@ I built a Weather Forecasting System that not only predicts the next 10 days but
 * Python, Pandas, NumPy
 * TensorFlow / Keras (RNN + LSTM)
 * Streamlit (interactive UI)
-* OpenWeather API (live data)
+* Open-Meteo Historical Data (live data)
 
 🔹 **Key Highlights:**
 
